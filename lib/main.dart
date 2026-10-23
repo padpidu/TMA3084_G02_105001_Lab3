@@ -14,6 +14,7 @@ class BakeryProduct {
   final double price;
   final IconData icon;
   final Color color;
+  final String? imagePath;
   int quantity;
 
   BakeryProduct({
@@ -22,9 +23,11 @@ class BakeryProduct {
     required this.price,
     required this.icon,
     required this.color,
+    this.imagePath,
     this.quantity = 0,
   });
 }
+
 
 class PadBakeryApp extends StatelessWidget {
   const PadBakeryApp({super.key});
@@ -64,6 +67,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
       price: 5.90,
       icon: Icons.bakery_dining,
       color: navy,
+      imagePath: 'assets/images/butter_kwason.jpg',
     ),
     BakeryProduct(
       name: 'Melon Pan',
@@ -71,6 +75,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
       price: 6.50,
       icon: Icons.breakfast_dining,
       color: bakeryRed,
+      imagePath: 'assets/images/melon_pan.jpg',
     ),
     BakeryProduct(
       name: 'Matcha Bun',
@@ -78,6 +83,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
       price: 6.90,
       icon: Icons.cake,
       color: navy,
+      imagePath: 'assets/images/matcha_bun.jpg',
     ),
   ];
 
@@ -119,7 +125,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
           builder: (context, refreshSheet) {
             return SafeArea(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                padding: const EdgeInsets.fromLTRB(18, 8, 20, 24),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -285,19 +291,19 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         children: [
           _buildWelcomeBanner(),
-          const SizedBox(height: 26),
+          const SizedBox(height: 22),
           _buildSectionHeading(),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           ...List.generate(
             products.length,
             (index) => _buildProductCard(products[index], index),
           ),
           const SizedBox(height: 8),
           _buildCartSummary(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           const Center(
             child: Text(
               '焼きたて • BAKED WITH LOVE',
@@ -308,7 +314,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -316,7 +322,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
 
   Widget _buildWelcomeBanner() {
     return Container(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [navy, Color(0xFF2867A8)],
@@ -329,16 +335,16 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('焼きたて！', style: TextStyle(color: Colors.white70, fontSize: 16)),
-          SizedBox(height: 8),
+          SizedBox(height: 6),
           Text(
             'Fresh from the oven.',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 25,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 6),
           Text(
             'Japanese-inspired treats, baked with love.',
             style: TextStyle(color: Colors.white70, fontSize: 14),
@@ -379,15 +385,31 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 54,
-              height: 54,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.16),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(product.icon, color: Colors.white, size: 32),
-            ),
+            
+ClipRRect(
+  borderRadius: BorderRadius.circular(14),
+  child: SizedBox(
+    width: 100,
+    height: 100,
+    child: product.imagePath != null
+        ? Image.asset(
+            product.imagePath!,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: Colors.white24,
+                child: Icon(
+                  product.icon,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              );
+            },
+          )
+        : Icon(product.icon, color: Colors.white, size: 32),
+  ),
+),
+
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -484,9 +506,9 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
     return Card(
       color: Colors.white,
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -498,7 +520,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                 letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
