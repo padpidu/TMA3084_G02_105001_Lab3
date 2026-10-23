@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 void main() {
@@ -37,9 +36,7 @@ class PadBakeryApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: navy,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: navy),
         scaffoldBackgroundColor: pageBackground,
         appBarTheme: const AppBarTheme(
           backgroundColor: navy,
@@ -56,8 +53,7 @@ class BakeryHomePage extends StatefulWidget {
   const BakeryHomePage({super.key});
 
   @override
-  State<BakeryHomePage> createState() =>
-      _BakeryHomePageState();
+  State<BakeryHomePage> createState() => _BakeryHomePageState();
 }
 
 class _BakeryHomePageState extends State<BakeryHomePage> {
@@ -85,23 +81,19 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
     ),
   ];
 
-  int get totalItems => products.fold(
-        0,
-        (sum, product) => sum + product.quantity,
-      );
+  int get totalItems =>
+      products.fold(0, (sum, product) => sum + product.quantity);
 
   double get totalPrice => products.fold(
-        0.0,
-        (sum, product) =>
-            sum + product.price * product.quantity,
-      );
+    0.0,
+    (sum, product) => sum + product.price * product.quantity,
+  );
 
   String money(double amount) => 'RM ${amount.toStringAsFixed(2)}';
 
   void changeQuantity(int index, int change) {
     setState(() {
-      final nextQuantity =
-          products[index].quantity + change;
+      final nextQuantity = products[index].quantity + change;
 
       if (nextQuantity >= 0) {
         products[index].quantity = nextQuantity;
@@ -127,14 +119,11 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
           builder: (context, refreshSheet) {
             return SafeArea(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  20, 8, 20, 24,
-                ),
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         'YOUR ORDER',
@@ -152,9 +141,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                       const SizedBox(height: 16),
                       if (totalItems == 0)
                         const Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 28,
-                          ),
+                          padding: EdgeInsets.symmetric(vertical: 28),
                           child: Center(
                             child: Column(
                               children: [
@@ -176,8 +163,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                               (product) => ListTile(
                                 contentPadding: EdgeInsets.zero,
                                 leading: CircleAvatar(
-                                  backgroundColor:
-                                      product.color,
+                                  backgroundColor: product.color,
                                   child: Icon(
                                     product.icon,
                                     color: Colors.white,
@@ -193,10 +179,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                                   '${money(product.price)} × ${product.quantity}',
                                 ),
                                 trailing: Text(
-                                  money(
-                                    product.price *
-                                        product.quantity,
-                                  ),
+                                  money(product.price * product.quantity),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -205,8 +188,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                             ),
                       const Divider(height: 28),
                       Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
                             'TOTAL',
@@ -233,8 +215,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                               ? null
                               : () {
                                   Navigator.pop(sheetContext);
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
                                         'Order reviewed! '
@@ -243,9 +224,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                                     ),
                                   );
                                 },
-                          icon: const Icon(
-                            Icons.check_circle_outline,
-                          ),
+                          icon: const Icon(Icons.check_circle_outline),
                           label: const Text('Confirm Order'),
                         ),
                       ),
@@ -280,17 +259,11 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
           children: [
             Text(
               'PAD BAKERY',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2),
             ),
             Text(
               'JAPANESE STREET BAKERY',
-              style: TextStyle(
-                fontSize: 10,
-                letterSpacing: 1.5,
-              ),
+              style: TextStyle(fontSize: 10, letterSpacing: 1.5),
             ),
           ],
         ),
@@ -304,10 +277,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                 child: IconButton(
                   tooltip: 'Open shopping cart',
                   onPressed: showCheckout,
-                  icon: const Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 28,
-                  ),
+                  icon: const Icon(Icons.shopping_cart_outlined, size: 28),
                 ),
               ),
             ),
@@ -323,10 +293,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
           const SizedBox(height: 14),
           ...List.generate(
             products.length,
-            (index) => _buildProductCard(
-              products[index],
-              index,
-            ),
+            (index) => _buildProductCard(products[index], index),
           ),
           const SizedBox(height: 8),
           _buildCartSummary(),
@@ -361,13 +328,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '焼きたて！',
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 16,
-            ),
-          ),
+          Text('焼きたて！', style: TextStyle(color: Colors.white70, fontSize: 16)),
           SizedBox(height: 8),
           Text(
             'Fresh from the oven.',
@@ -380,10 +341,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
           SizedBox(height: 8),
           Text(
             'Japanese-inspired treats, baked with love.',
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: Colors.white70, fontSize: 14),
           ),
         ],
       ),
@@ -404,26 +362,18 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
         ),
         Text(
           '${products.length} ITEMS',
-          style: const TextStyle(
-            color: navy,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(color: navy, fontWeight: FontWeight.bold),
         ),
       ],
     );
   }
 
-  Widget _buildProductCard(
-    BakeryProduct product,
-    int index,
-  ) {
+  Widget _buildProductCard(BakeryProduct product, int index) {
     return Card(
       color: product.color,
       elevation: 3,
       margin: const EdgeInsets.only(bottom: 14),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -436,11 +386,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                 color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
-                product.icon,
-                color: Colors.white,
-                size: 32,
-              ),
+              child: Icon(product.icon, color: Colors.white, size: 32),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -458,10 +404,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                   const SizedBox(height: 5),
                   Text(
                     product.description,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -482,9 +425,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                             : null,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
                         child: Text(
                           '${product.quantity}',
                           style: const TextStyle(
@@ -496,8 +437,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                       ),
                       _quantityButton(
                         icon: Icons.add,
-                        onPressed: () =>
-                            changeQuantity(index, 1),
+                        onPressed: () => changeQuantity(index, 1),
                       ),
                       const SizedBox(width: 10),
                       const Text(
@@ -544,9 +484,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
     return Card(
       color: Colors.white,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(
@@ -566,9 +504,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
               children: [
                 Text(
                   'Total items: $totalItems',
-                  style: const TextStyle(
-                    color: Colors.black54,
-                  ),
+                  style: const TextStyle(color: Colors.black54),
                 ),
                 Text(
                   money(totalPrice),
@@ -590,9 +526,7 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
                 style: FilledButton.styleFrom(
                   backgroundColor: navy,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
             ),
