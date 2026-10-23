@@ -115,142 +115,23 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
   }
 
   void showCheckout() {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (context, refreshSheet) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(18, 8, 20, 24),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'YOUR ORDER',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Review your freshly baked selection.',
-                        style: TextStyle(color: Colors.black54),
-                      ),
-                      const SizedBox(height: 16),
-                      if (totalItems == 0)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 28),
-                          child: Center(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.shopping_bag_outlined,
-                                  size: 54,
-                                  color: Colors.black38,
-                                ),
-                                SizedBox(height: 12),
-                                Text('Your cart is empty.'),
-                              ],
-                            ),
-                          ),
-                        )
-                      else
-                        ...products
-                            .where((p) => p.quantity > 0)
-                            .map(
-                              (product) => ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                leading: CircleAvatar(
-                                  backgroundColor: product.color,
-                                  child: Icon(
-                                    product.icon,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                title: Text(
-                                  product.name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  '${money(product.price)} × ${product.quantity}',
-                                ),
-                                trailing: Text(
-                                  money(product.price * product.quantity),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                      const Divider(height: 28),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'TOTAL',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            money(totalPrice),
-                            style: const TextStyle(
-                              fontSize: 23,
-                              color: navy,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 18),
-                      SizedBox(
-                        width: double.infinity,
-                        child: FilledButton.icon(
-                          onPressed: totalItems == 0
-                              ? null
-                              : () {
-                                  Navigator.pop(sheetContext);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Order reviewed! '
-                                        'Payment is not connected yet.',
-                                      ),
-                                    ),
-                                  );
-                                },
-                          icon: const Icon(Icons.check_circle_outline),
-                          label: const Text('Confirm Order'),
-                        ),
-                      ),
-                      if (totalItems > 0)
-                        Center(
-                          child: TextButton(
-                            onPressed: () {
-                              clearCart();
-                              refreshSheet(() {});
-                            },
-                            child: const Text('Clear cart'),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CheckoutPage(
+          products: products,
+          money: money,
+          onClearCart: clearCart,
+          onConfirmOrder: () {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(this.context).showSnackBar(
+              const SnackBar(
+                content: Text('Order reviewed! Payment is not connected yet.'),
               ),
             );
           },
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -552,6 +433,236 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CheckoutPage extends StatefulWidget {
+  const CheckoutPage({
+    super.key,
+    required this.products,
+    required this.money,
+    required this.onClearCart,
+    required this.onConfirmOrder,
+  });
+
+  final List<BakeryProduct> products;
+  final String Function(double amount) money;
+  final VoidCallback onClearCart;
+  final VoidCallback onConfirmOrder;
+
+  @override
+  State<CheckoutPage> createState() => _CheckoutPageState();
+}
+
+class _CheckoutPageState extends State<CheckoutPage> {
+  int get totalItems =>
+      widget.products.fold(0, (sum, product) => sum + product.quantity);
+
+  double get totalPrice => widget.products.fold(
+    0.0,
+    (sum, product) => sum + product.price * product.quantity,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedProducts = widget.products
+        .where((product) => product.quantity > 0)
+        .toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('CHECKOUT'),
+        leading: IconButton(
+          tooltip: 'Back to bakery',
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(18),
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [navy, Color(0xFF2867A8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.receipt_long, color: Colors.white, size: 32),
+                SizedBox(height: 12),
+                Text(
+                  'YOUR ORDER',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  'Review your freshly baked selection.',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 22),
+          const Text(
+            'ORDER SUMMARY',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Card(
+            color: Colors.white,
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: selectedProducts.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.shopping_bag_outlined,
+                              size: 52,
+                              color: Colors.black38,
+                            ),
+                            SizedBox(height: 12),
+                            Text('Your cart is empty.'),
+                            SizedBox(height: 4),
+                            Text(
+                              'Return to the menu to add some treats.',
+                              style: TextStyle(color: Colors.black54),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        for (final product in selectedProducts) ...[
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: CircleAvatar(
+                              backgroundColor: product.color,
+                              child: Icon(product.icon, color: Colors.white),
+                            ),
+                            title: Text(
+                              product.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(
+                              '${widget.money(product.price)} × ${product.quantity}',
+                            ),
+                            trailing: Text(
+                              widget.money(product.price * product.quantity),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Divider(height: 1),
+                        ],
+                      ],
+                    ),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Card(
+            color: Colors.white,
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Total items',
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                      Text(
+                        '$totalItems',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Divider(),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'GRAND TOTAL',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        widget.money(totalPrice),
+                        style: const TextStyle(
+                          color: navy,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: totalItems == 0 ? null : widget.onConfirmOrder,
+              icon: const Icon(Icons.check_circle_outline),
+              label: const Text('Confirm Order'),
+              style: FilledButton.styleFrom(
+                backgroundColor: navy,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+              ),
+            ),
+          ),
+          if (totalItems > 0)
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  widget.onClearCart();
+                  setState(() {});
+                },
+                child: const Text('Clear cart'),
+              ),
+            ),
+        ],
       ),
     );
   }
