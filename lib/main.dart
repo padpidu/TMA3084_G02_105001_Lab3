@@ -28,7 +28,6 @@ class BakeryProduct {
   });
 }
 
-
 class PadBakeryApp extends StatelessWidget {
   const PadBakeryApp({super.key});
 
@@ -385,30 +384,29 @@ class _BakeryHomePageState extends State<BakeryHomePage> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
-ClipRRect(
-  borderRadius: BorderRadius.circular(14),
-  child: SizedBox(
-    width: 100,
-    height: 100,
-    child: product.imagePath != null
-        ? Image.asset(
-            product.imagePath!,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                color: Colors.white24,
-                child: Icon(
-                  product.icon,
-                  color: Colors.white,
-                  size: 32,
-                ),
-              );
-            },
-          )
-        : Icon(product.icon, color: Colors.white, size: 32),
-  ),
-),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: product.imagePath != null
+                    ? Image.asset(
+                        product.imagePath!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.white24,
+                            child: Icon(
+                              product.icon,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                          );
+                        },
+                      )
+                    : Icon(product.icon, color: Colors.white, size: 32),
+              ),
+            ),
 
             const SizedBox(width: 14),
             Expanded(
